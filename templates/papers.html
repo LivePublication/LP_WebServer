@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="grid-container halves">
+    {% for paper in papers %}
+            <div>
+                <h2><a href={{ paper.link }}>{{ paper.title }}</a></h2>
+                <p>{{ paper.authors }}</p>
+                <p>{{ paper.venue }}</p>
+                <p>{{ paper.year }}</p>
+                <p>{{ paper.abstract }}</p>
+            </div>
+    {% endfor %}
+    </div>
+{% endblock %}
