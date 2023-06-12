@@ -12,5 +12,5 @@
     "issue": "404"
   },
   "content": "content.md",
-  "artifacts": ["test_image.png"]
+  "artefacts": ["test.png"]
 }

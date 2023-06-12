@@ -5,7 +5,7 @@ Note to Gus - I have no opinions on the visual formatting here, the schema of th
 
 This is just an example of the pipeline from json + data in a folder -> live paper.
 
-![Caption](test_image.png)
+![Caption](test.png)
 
 ## Notes to Gus
 * This is here as an example of the data -> webpage pipline through flask

@@ -4,6 +4,7 @@ import flask
 from flask import render_template
 from markupsafe import escape, Markup
 
+from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content
 
 app = flask.Flask(__name__)
@@ -40,6 +41,9 @@ def paper(paper_slug):
     safe_slug = escape(paper_slug)
     if safe_slug not in papers:
         flask.abort(404)
+
+    # Host artefacts
+    host_artefacts(f'papers/{safe_slug}')
 
     # Render paper
     content = paper_content(f'papers/{safe_slug}')
