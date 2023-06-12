@@ -1,0 +1,16 @@
+{
+  "frontmatter": {
+    "slug": "test-paper",
+    "title": "Test paper",
+    "authors": [
+      "J. Bloggs",
+      "A. N. Other"
+    ],
+    "year": "2023",
+    "journal": "Journal of Bloggs",
+    "volume": "1",
+    "issue": "404"
+  },
+  "content": "content.md",
+  "artifacts": ["test_image.png"]
+}

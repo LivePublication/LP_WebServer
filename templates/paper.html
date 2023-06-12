@@ -2,10 +2,12 @@
 
 {% block content %}
     <div>
-        <h2>{{ paper.title }}</h2>
-        <p>{{ paper.authors }}</p>
-        <p>{{ paper.venue }}</p>
-        <p>{{ paper.year }}</p>
-        <p>{{ paper.abstract }}</p>
+        <h2>{{ metadata.title }}</h2>
+        {% for author in metadata.authors %}
+            <p>{{ author }}</p>
+        {% endfor %}
+        <p>{{ metadata.year }}</p>
+        <p>{{ metadata.abstract }}</p>
     </div>
+    {{ content }}
 {% endblock %}
