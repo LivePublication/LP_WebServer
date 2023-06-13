@@ -3,11 +3,15 @@ import sys
 import flask
 from flask import render_template
 from markupsafe import escape, Markup
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content
 
 app = flask.Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
 
 
 @app.route('/')
@@ -57,4 +61,4 @@ def paper(paper_slug):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
