@@ -52,8 +52,6 @@ def paper(paper_slug):
     # Render paper
     content = paper_content(f'papers/{safe_slug}')
 
-    print(papers[safe_slug], file=sys.stderr)
-
     return render_template('paper.html',
                            title='Live Publications',
                            metadata=papers[safe_slug]['frontmatter'],
