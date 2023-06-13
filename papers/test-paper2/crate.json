@@ -1,0 +1,17 @@
+{
+  "frontmatter": {
+    "slug": "test-paper2",
+    "title": "Test paper",
+    "authors": [
+      "S. O. Else",
+      "A. N. Other",
+      "A. Third"
+    ],
+    "year": "2022",
+    "journal": "Journal of Bloggs",
+    "volume": "1",
+    "issue": "404"
+  },
+  "content": "content.md",
+  "artefacts": ["test.png"]
+}
