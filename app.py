@@ -3,7 +3,7 @@ from flask import render_template
 from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from githubapp.app import get_all_repos, _get_quarto_metadata
+from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content
 
@@ -18,18 +18,14 @@ def index():
     return render_template('index.html', title='Live Publications', text='This is the home page')
 
 
-papers_list = [
-    {'title': f'Paper {i}', 'authors': 'Author 1, Author 2', 'year': '2020',
-     'link': f'papers/{i}'}
-    for i in range(5)
-]
-
-
 @app.route('/papers')
 def papers():
     papers = list_papers()
 
     list_view = [p['frontmatter'] for p in papers.values()]
+
+    for p in list_view:
+        p['slug'] = f'/papers/{p["slug"]}'
 
     return render_template('papers.html',
                            title='Live Publications',
@@ -80,6 +76,29 @@ def gh_papers():
                             title='Live Publications (github)',
                             papers=list_view)
 
+
+@app.route('/gh_papers/<owner>/<repo_name>')
+def gh_paper_versions(owner, repo_name):
+    """List available versions of a paper"""
+    repo = get_repo(owner, repo_name)
+
+    # Get versions
+    versions = get_paper_version_list(repo)
+
+    # TODO: convert tags to colored badges
+    for v in versions:
+        v['tags'] = ', '.join(v['tags'])
+        v['slug'] = f'{owner}/{repo_name}/{v["sha"]}'
+
+    return render_template('paper_versions.html',
+                           title='Live Publications (github)',
+                           versions=versions)
+
+
+@app.route('/gh_papers/<owner>/<repo_name>/<sha>')
+def gh_paper(owner, repo_name, sha):
+    # TODO: render paper on demand
+    pass
 
 
 if __name__ == '__main__':

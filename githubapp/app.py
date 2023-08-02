@@ -81,6 +81,25 @@ def download_repo(repo: Repository, ref: str = None) -> str:
     return repo_dir
 
 
+def get_paper_version_list(repo: Repository) -> list[dict]:
+    """Get table of commit details for a paper"""
+    # TODO: this function only serves one page - could be modularised
+    versions = [
+        {'sha': c.sha,
+         'date': c.last_modified,
+         'message': c.commit.message,
+         'tags': []}
+        for c in repo.get_commits()]
+
+    tags = get_tagged_commits(repo)
+    for t, sha in tags.items():
+        for c in versions:
+            if c['sha'] == sha:
+                c['tags'].append(t)
+
+    return versions
+
+
 def get_commits(repo: Repository) -> list[str]:
     """Get a list of commit SHAs"""
     return [c.sha for c in repo.get_commits()]
