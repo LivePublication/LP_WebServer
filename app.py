@@ -1,10 +1,9 @@
-import sys
-
 import flask
 from flask import render_template
 from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from githubapp.app import get_all_repos, _get_quarto_metadata
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content
 
@@ -56,6 +55,31 @@ def paper(paper_slug):
                            title='Live Publications',
                            metadata=papers[safe_slug]['frontmatter'],
                            content=Markup(content))
+
+
+@app.route("/gh_papers")
+def gh_papers():
+    """List available papers, for each paper navigate to list of versions"""
+    repos = get_all_repos()
+
+    def slug(repo):
+        return f'/gh_papers/{repo.owner.name}/{repo.name}'
+
+    # Build list of metadata similar to the papers() function
+    list_view = []
+    for r in repos:
+        metadata = _get_quarto_metadata(r)
+        list_view.append({
+            'title': metadata['title'],
+            'authors': [a['name'] for a in metadata['authors']],
+            'year': metadata.get('year', 'unknown'),
+            'slug': slug(r)
+        })
+
+    return render_template('papers.html',
+                            title='Live Publications (github)',
+                            papers=list_view)
+
 
 
 if __name__ == '__main__':

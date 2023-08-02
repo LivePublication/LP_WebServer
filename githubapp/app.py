@@ -2,7 +2,9 @@ import os
 import tarfile
 
 import requests
+import yaml
 from github import Github, GithubIntegration
+from github.Installation import Installation
 from github.Repository import Repository
 
 from keys import github_app_id, github_key_file
@@ -31,6 +33,20 @@ def get_repo(owner, repo_name) -> Repository:
     """Get a Github repo instance"""
     git = get_git(owner, repo_name)
     return git.get_repo(f"{owner}/{repo_name}")
+
+
+def get_repos(installation: Installation) -> list[Repository]:
+    """Get a list of repos for an installation"""
+    return list(installation.get_repos())
+
+
+def get_all_repos() -> list[Repository]:
+    """Get a list of all repos for the app"""
+    repos = []
+    for installation in git_integration.get_installations():
+        repos.extend(get_repos(installation))
+
+    return repos
 
 
 def download_repo(repo: Repository, ref: str = None) -> str:
@@ -74,6 +90,14 @@ def get_tagged_commits(repo: Repository) -> dict[str, str]:
     """Get a dict of tag name to commit SHA"""
     tags = repo.get_tags()
     return {t.name: t.commit.sha for t in tags}
+
+
+def _get_quarto_metadata(repo: Repository) -> dict:
+    """This needs replaced once the metadata is somewhere more suitable"""
+    c = repo.get_contents('_quarto.yml')
+    data = yaml.safe_load(c.decoded_content)
+
+    return data
 
 
 if __name__ == '__main__':
