@@ -2,3 +2,8 @@ Flask
 pandoc
 PyGithub
 pyyaml
+requests
+pyyaml
+PyGithub
+cryptograhpy
+gunicorn
