@@ -5,5 +5,5 @@ pyyaml
 requests
 pyyaml
 PyGithub
-cryptograhpy
+cryptography
 gunicorn
