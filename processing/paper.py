@@ -1,10 +1,15 @@
 import json
 from os import path
 from glob import glob
+import uuid
+
+from githubapp.app import get_repo, download_repo
+from processing.artefacts import reference_artefacts, host_artefacts
 
 import pandoc
-
-from processing.artefacts import reference_artefacts, host_artefacts
+if uuid.getnode() == 224948472755932:
+    # For testing only - correct pandoc version on my laptop
+    pandoc.configure(path='C:/Program Files/Pandoc/pandoc.exe')
 
 
 def paper_metadata(folder):
@@ -28,6 +33,22 @@ def paper_content(folder):
         doc = pandoc.read(f.read())
 
     doc = reference_artefacts(metadata, doc)
+
+    return pandoc.write(doc, format='html')
+
+
+def gh_paper_content(owner, repo_name, sha):
+    # Get downloaded repo
+    repo = get_repo(owner, repo_name)
+    repo_dir = download_repo(repo, sha)
+
+    # Check that we have an index file
+    index_file = path.join(repo_dir, 'index.qmd')
+    if not path.isfile(index_file):
+        raise FileNotFoundError(f'No index.qmd file in {repo_dir}')
+
+    with open(index_file, 'r') as f:
+        doc = pandoc.read(f.read())
 
     return pandoc.write(doc, format='html')
 

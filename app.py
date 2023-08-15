@@ -5,7 +5,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list
 from processing.artefacts import host_artefacts
-from processing.paper import list_papers, paper_content
+from processing.paper import list_papers, paper_content, gh_paper_content
 
 app = flask.Flask(__name__)
 app.wsgi_app = ProxyFix(
@@ -97,8 +97,19 @@ def gh_paper_versions(owner, repo_name):
 
 @app.route('/gh_papers/<owner>/<repo_name>/<sha>')
 def gh_paper(owner, repo_name, sha):
-    # TODO: render paper on demand
-    pass
+    """Render a paper version"""
+    _owner = escape(owner)
+    _repo_name = escape(repo_name)
+    _sha = escape(sha)
+
+    try:
+        content = gh_paper_content(_owner, _repo_name, _sha)
+        return render_template('paper.html',
+                        title='Live Publications',
+                        metadata={},
+                        content=Markup(content))
+    except FileNotFoundError:
+        flask.abort(404)
 
 
 if __name__ == '__main__':

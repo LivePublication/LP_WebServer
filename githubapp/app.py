@@ -49,6 +49,15 @@ def get_all_repos() -> list[Repository]:
     return repos
 
 
+def repo_dir_name(owner, repo_name, sha=None):
+    """Get the name of the directory to store a repo"""
+    # TODO: Check that 'current' is up to date
+    if sha is None:
+        return os.path.join(ROOT_DIR, 'papers', owner, repo_name, 'current')
+    else:
+        return os.path.join(ROOT_DIR, 'papers', owner, repo_name, sha)
+
+
 def download_repo(repo: Repository, ref: str = None) -> str:
     """Download a repo to a temporary folder"""
     if ref is None:
@@ -58,10 +67,7 @@ def download_repo(repo: Repository, ref: str = None) -> str:
     r = requests.get(download_url, allow_redirects=True)
 
     # Create a directory to store the repo
-    if ref is None:
-        repo_dir = os.path.join(ROOT_DIR, 'papers', repo.name, 'temp')
-    else:
-        repo_dir = os.path.join(ROOT_DIR, 'papers', repo.name, ref)
+    repo_dir = repo_dir_name(repo.owner.name, repo.name, ref)
 
     if os.path.isdir(repo_dir):
         # TODO - consider what else might need to happen here
@@ -74,9 +80,19 @@ def download_repo(repo: Repository, ref: str = None) -> str:
         f.write(r.content)
 
     with tarfile.open(os.path.join(repo_dir, 'repo.tar.gz')) as tar:
-        tar.extractall(repo_dir)
+        tar.extractall(repo_dir, filter='data')
 
     os.remove(os.path.join(repo_dir, 'repo.tar.gz'))
+
+    # The tarfile contains a folder with the repo name, move contents up a level
+    # TODO: consider using this subfolder as the slug, and having all papers in one folder
+    contents = os.listdir(repo_dir)
+    assert len(contents) == 1, f'Expected one folder in {repo_dir}, found {contents}'
+    assert os.path.isdir(os.path.join(repo_dir, contents[0])), f'Expected a folder in {repo_dir}, found {contents[0]}'
+    sub_dir = os.path.join(repo_dir, contents[0])
+    for f in os.listdir(sub_dir):
+        os.rename(os.path.join(sub_dir, f), os.path.join(repo_dir, f))
+    os.rmdir(sub_dir)
 
     return repo_dir
 
