@@ -7,6 +7,7 @@ from os import path
 
 import pandoc
 import quarto
+import logging
 
 from githubapp.app import get_repo, download_repo
 from processing.artefacts import reference_artefacts
@@ -14,6 +15,9 @@ from processing.artefacts import reference_artefacts
 if uuid.getnode() == 224948472755932:
     # For testing only - correct pandoc version on my laptop
     pandoc.configure(path='C:/Program Files/Pandoc/pandoc.exe')
+
+logger = logging.getLogger('paper')
+info = logger.info
 
 
 def paper_metadata(folder):
@@ -45,25 +49,30 @@ def gh_paper_content(owner, repo_name, sha):
     # Get downloaded repo
     repo = get_repo(owner, repo_name)
     repo_dir = download_repo(repo, sha)
+    info(f'gh_paper_content - Downloaded repo to {repo_dir}')
 
     # Check that we have an index file
     index_file = path.join(repo_dir, 'index.qmd')
     if not path.isfile(index_file):
+        info(f'gh_paper_content - No index.qmd file in {repo_dir}')
         raise FileNotFoundError(f'No index.qmd file in {repo_dir}')
 
     # Check if we have a cached version
     # TODO: implement some way of invalidating the cache
     render_file = path.join(repo_dir, 'paper_render.html')
     if path.isfile(render_file):
+        info(f'gh_paper_content - Using cached version of {render_file}')
         return render_file
 
     # If we don't have a version, render it
     with contextlib.chdir(repo_dir):
+        info(f'gh_paper_content - Rendering {index_file} to {render_file}')
         subprocess.check_call([quarto.quarto.find_quarto(), 'render', index_file,
                                '--to', 'html', '--output', path.basename(render_file),
                                # '--output-dir', 'render'  # TODO: consider rendering in a different folder to the repo download
                                '--execute'])
 
+    info(f'gh_paper_content - Render complete, returing {render_file}')
     return render_file
 
 

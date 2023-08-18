@@ -17,7 +17,7 @@ app.wsgi_app = ProxyFix(
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers.extend(gunicorn_logger.handlers)
 app.logger.setLevel(logging.DEBUG)
-
+info = app.logger.info
 
 @app.route('/')
 def index():
@@ -107,15 +107,16 @@ def gh_paper(owner, repo_name, sha):
     _owner = escape(owner)
     _repo_name = escape(repo_name)
     _sha = escape(sha)
-
-    print(_owner, _repo_name, _sha)
-    app.logger.info(f'Paper request: {_owner}/{_repo_name}/{_sha}')
+    info(f'gh_paper - Paper request: {_owner}/{_repo_name}/{_sha}')
 
     try:
         html_src = gh_paper_content(_owner, _repo_name, _sha)
+        info(f'gh_paper - HTML source: {html_src}')
 
         with open(html_src, 'r', encoding='utf-8') as f:
             html = f.read()
+
+        info(f'gh_paper - Returning HTML')
 
         return html
     except FileNotFoundError:
