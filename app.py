@@ -108,6 +108,9 @@ def gh_paper(owner, repo_name, sha):
     _repo_name = escape(repo_name)
     _sha = escape(sha)
 
+    print(_owner, _repo_name, _sha)
+    app.logger.info(f'Paper request: {_owner}/{_repo_name}/{_sha}')
+
     try:
         html_src = gh_paper_content(_owner, _repo_name, _sha)
 
