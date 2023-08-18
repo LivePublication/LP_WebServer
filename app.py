@@ -16,7 +16,7 @@ app.wsgi_app = ProxyFix(
 # Tie in gunicorn logger
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers.extend(gunicorn_logger.handlers)
-app.logger.setLevel(gunicorn_logger.level)
+app.logger.setLevel(logging.DEBUG)
 
 
 @app.route('/')
