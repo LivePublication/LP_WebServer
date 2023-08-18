@@ -10,6 +10,10 @@ from github.Repository import Repository
 from keys import github_app_id, github_key_file
 from root import ROOT_DIR
 
+# Cache API requests to GitHub (note: may affect other uses of requests)
+import requests_cache
+requests_cache.install_cache('github_cache', backend='sqlite', expire_after=600)
+
 with open(
         os.path.normpath(os.path.expanduser(github_key_file)),
         'r'

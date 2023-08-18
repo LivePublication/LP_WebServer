@@ -3,6 +3,7 @@ pandoc
 PyGithub
 pyyaml
 requests
+requests-cache
 pyyaml
 PyGithub
 cryptography
