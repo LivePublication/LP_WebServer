@@ -1,3 +1,4 @@
+import logging
 import flask
 from flask import render_template
 from markupsafe import escape, Markup
@@ -11,6 +12,11 @@ app = flask.Flask(__name__)
 app.wsgi_app = ProxyFix(
     app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
 )
+
+# Tie in gunicorn logger
+gunicorn_logger = logging.getLogger('gunicorn.error')
+app.logger.handlers.extend(gunicorn_logger.handlers)
+app.logger.setLevel(gunicorn_logger.level)
 
 
 @app.route('/')
