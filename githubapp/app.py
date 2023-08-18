@@ -60,12 +60,6 @@ def repo_dir_name(owner, repo_name, sha=None):
 
 def download_repo(repo: Repository, ref: str = None) -> str:
     """Download a repo to a temporary folder"""
-    if ref is None:
-        download_url = repo.get_archive_link('tarball')
-    else:
-        download_url = repo.get_archive_link('tarball', ref)
-    r = requests.get(download_url, allow_redirects=True)
-
     # Create a directory to store the repo
     repo_dir = repo_dir_name(repo.owner.name, repo.name, ref)
 
@@ -75,7 +69,14 @@ def download_repo(repo: Repository, ref: str = None) -> str:
 
     os.makedirs(repo_dir, exist_ok=True)
 
-    # Download, extract and discard archive
+    # Download archive
+    if ref is None:
+        download_url = repo.get_archive_link('tarball')
+    else:
+        download_url = repo.get_archive_link('tarball', ref)
+    r = requests.get(download_url, allow_redirects=True)
+
+    # Extract and discard archive
     with open(os.path.join(repo_dir, 'repo.tar.gz'), 'wb') as f:
         f.write(r.content)
 
