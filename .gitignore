@@ -162,9 +162,13 @@ cython_debug/
 
 # Project specific ignores
 /static/paper-artefacts/
+/static/index_files/
 
 # Private keys
 keys.py
 
 # Generated paper files
 papers/
+
+# Requests cache files
+github_cache.sqlite
