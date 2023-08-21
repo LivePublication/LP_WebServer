@@ -119,7 +119,8 @@ def gh_paper(owner, repo_name, sha):
         info(f'gh_paper - Returning HTML')
 
         return html
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        logging.error(e)
         flask.abort(404)
 
 

@@ -1,5 +1,6 @@
 import contextlib
 import json
+import os
 import subprocess
 import uuid
 from glob import glob
@@ -65,9 +66,10 @@ def gh_paper_content(owner, repo_name, sha):
         return render_file
 
     # If we don't have a version, render it
+    info(f'gh_paper_content - using quarto at {os.system("which quarto")}')
     with contextlib.chdir(repo_dir):
         info(f'gh_paper_content - Rendering {index_file} to {render_file}')
-        subprocess.check_call([quarto.quarto.find_quarto(), 'render', index_file,
+        subprocess.check_call(['quarto', 'render', index_file,
                                '--to', 'html', '--output', path.basename(render_file),
                                # '--output-dir', 'render'  # TODO: consider rendering in a different folder to the repo download
                                '--execute'])
