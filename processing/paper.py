@@ -2,6 +2,7 @@ import contextlib
 import json
 import os
 import subprocess
+import time
 import uuid
 from glob import glob
 from os import path
@@ -61,9 +62,12 @@ def gh_paper_content(owner, repo_name, sha):
     # Check if we have a cached version
     # TODO: implement some way of invalidating the cache
     render_file = path.join(repo_dir, 'paper_render.html')
+
     if path.isfile(render_file):
-        info(f'gh_paper_content - Using cached version of {render_file}')
-        return render_file
+        # For testing only, invalidate file after 1 minute
+        if time.time() - path.getmtime(render_file) > 60:
+            info(f'gh_paper_content - Using cached version of {render_file}')
+            return render_file
 
     # If we don't have a version, render it
     info(f'gh_paper_content - using quarto at {os.system("which quarto")}')
