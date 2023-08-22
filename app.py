@@ -1,5 +1,6 @@
 import logging
 import flask
+from bs4 import BeautifulSoup
 from flask import render_template
 from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -116,9 +117,19 @@ def gh_paper(owner, repo_name, sha):
         with open(html_src, 'r', encoding='utf-8') as f:
             html = f.read()
 
+        # Extract html so that we can insert it correctly into templates
+        soup = BeautifulSoup(html, 'html.parser')
+        head = ''.join(str(c) for c in soup.head.contents)
+        header = ''.join(str(c) for c in soup.header.contents)
+        body = soup.find(id='quarto-content')
+
         info(f'gh_paper - Returning HTML')
 
-        return html
+        return render_template('quarto_paper.html',
+                                 title='Live Publications',
+                                 head=Markup(head),
+                                 header=Markup(header),
+                                 content=Markup(body))
     except FileNotFoundError as e:
         logging.error(e)
         flask.abort(404)
