@@ -5,7 +5,8 @@ from flask import render_template
 from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list, repo_dir_name
+from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list, repo_dir_name, \
+    get_next_prev_slug
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content, gh_paper_content
 
@@ -123,13 +124,18 @@ def gh_paper(owner, repo_name, sha):
         header = ''.join(str(c) for c in soup.header.contents)
         body = soup.find(id='quarto-content')
 
+        # Link to next/previous version if available
+        next_slug, prev_slug = get_next_prev_slug(_owner, _repo_name, _sha)
+
         info(f'gh_paper - Returning HTML')
 
         return render_template('quarto_paper.html',
                                  title='Live Publications',
                                  head=Markup(head),
                                  header=Markup(header),
-                                 content=Markup(body))
+                                 content=Markup(body),
+                                 next_slug=next_slug,
+                                 prev_slug=prev_slug)
     except FileNotFoundError as e:
         logging.error(e)
         flask.abort(404)

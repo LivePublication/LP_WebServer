@@ -126,6 +126,21 @@ def get_commits(repo: Repository) -> list[str]:
     return [c.sha for c in repo.get_commits()]
 
 
+def get_next_prev_slug(owner: str, repo_name: str, sha: str) -> tuple[str, str]:
+    """Get the next and previous slugs for a paper"""
+    repo = get_repo(owner, repo_name)
+    versions = get_commits(repo)
+    assert sha in versions, f'Expected {sha} in {versions}'
+
+    next_sha = versions[versions.index(sha) - 1] if versions.index(sha) > 0 else None
+    next_slug = f'{owner}/{repo_name}/{next_sha}' if next_sha else None
+
+    prev_sha = versions[versions.index(sha) + 1] if versions.index(sha) < len(versions) - 1 else None
+    prev_slug = f'{owner}/{repo_name}/{prev_sha}' if prev_sha else None
+
+    return next_slug, prev_slug
+
+
 def get_tagged_commits(repo: Repository) -> dict[str, str]:
     """Get a dict of tag name to commit SHA"""
     tags = repo.get_tags()
