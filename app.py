@@ -6,7 +6,7 @@ from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list, repo_dir_name, \
-    get_next_prev_slug
+    get_next_prev_slug, get_commits
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content, gh_paper_content
 
@@ -121,10 +121,11 @@ def gh_paper(owner, repo_name, sha):
         # Extract html so that we can insert it correctly into templates
         soup = BeautifulSoup(html, 'html.parser')
 
-        # for t in soup.findAll('section', 'level2'):
-        #     new_tag = soup.new_tag('iframe')
-        #     new_tag['src'] = f'/gh_papers/{_owner}/{_repo_name}/{_sha}/sections/{t["id"]}'
-        #     t.replace_with(new_tag)
+        for t in soup.findAll('section', 'level2'):
+            new_tag = soup.new_tag('div')
+            new_tag['class'] = 'carousel'
+            new_tag['id'] = t['id']
+            t.replace_with(new_tag)
 
         head = ''.join(str(c) for c in soup.head.contents)
         header = ''.join(str(c) for c in soup.header.contents)
@@ -141,7 +142,9 @@ def gh_paper(owner, repo_name, sha):
                                  header=Markup(header),
                                  content=Markup(body),
                                  next_slug=next_slug,
-                                 prev_slug=prev_slug)
+                                 prev_slug=prev_slug,
+                                 shas=','.join(get_commits(get_repo(_owner, _repo_name))),
+                                 current_sha=_sha)
     except FileNotFoundError as e:
         logging.error(e)
         flask.abort(404)

@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
+    <script src="/static/section_carousel.js"></script>
     {{ head }}
 {% endblock %}
 
@@ -22,5 +23,6 @@
 {% endblock %}
 
 {% block content %}
+    <div id="carousels" data-shas="{{ shas }}" data-rootsha="{{ current_sha }}"></div>
     {{ content }}
 {% endblock %}
