@@ -120,6 +120,12 @@ def gh_paper(owner, repo_name, sha):
 
         # Extract html so that we can insert it correctly into templates
         soup = BeautifulSoup(html, 'html.parser')
+
+        # for t in soup.findAll('section', 'level2'):
+        #     new_tag = soup.new_tag('iframe')
+        #     new_tag['src'] = f'/gh_papers/{_owner}/{_repo_name}/{_sha}/sections/{t["id"]}'
+        #     t.replace_with(new_tag)
+
         head = ''.join(str(c) for c in soup.head.contents)
         header = ''.join(str(c) for c in soup.header.contents)
         body = soup.find(id='quarto-content')
@@ -134,6 +140,53 @@ def gh_paper(owner, repo_name, sha):
                                  head=Markup(head),
                                  header=Markup(header),
                                  content=Markup(body),
+                                 next_slug=next_slug,
+                                 prev_slug=prev_slug)
+    except FileNotFoundError as e:
+        logging.error(e)
+        flask.abort(404)
+
+
+@app.route('/gh_papers/<owner>/<repo_name>/<sha>/sections/<section>')
+def gh_paper_section(owner, repo_name, sha, section):
+    _owner = escape(owner)
+    _repo_name = escape(repo_name)
+    _sha = escape(sha)
+    _section = escape(section)
+    info(f'gh_paper - Paper request: {_owner}/{_repo_name}/{_sha}')
+
+    try:
+        html_src = gh_paper_content(_owner, _repo_name, _sha)
+        info(f'gh_paper - HTML source: {html_src}')
+
+        with open(html_src, 'r', encoding='utf-8') as f:
+            html = f.read()
+
+        # Extract html so that we can insert it correctly into templates
+        soup = BeautifulSoup(html, 'html.parser')
+        head = ''.join(str(c) for c in soup.head.contents)
+        header = ''.join(str(c) for c in soup.header.contents)
+        body = soup.find(id='quarto-content')
+
+        sections = soup.findAll('section', 'level2')
+        section_dict = {
+            s['id']: s
+            for s in sections
+        }
+
+        if _section not in section_dict:
+            flask.abort(404)
+
+        # Links to next/prev version
+        next_slug, prev_slug = get_next_prev_slug(_owner, _repo_name, _sha)
+        if next_slug:
+            next_slug += f'/sections/{_section}'
+        if prev_slug:
+            prev_slug += f'/sections/{_section}'
+
+        # return section_dict[_section].prettify()
+        return render_template('section.html',
+                                 content=Markup(section_dict[_section]),
                                  next_slug=next_slug,
                                  prev_slug=prev_slug)
     except FileNotFoundError as e:

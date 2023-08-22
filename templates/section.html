@@ -1,0 +1,9 @@
+<div class="flex-div-space-around">
+    {% if prev_slug %}
+    <a href="/gh_papers/{{ prev_slug }}">Previous version</a>
+    {% endif %}
+    {% if next_slug %}
+    <a href="/gh_papers/{{ next_slug }}">Next version</a>
+    {% endif %}
+</div>
+{{content}}
