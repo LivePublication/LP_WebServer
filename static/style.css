@@ -1,4 +1,4 @@
-header {
+#site-header {
     background-color: #333;
     color: #f1f1f1;
     text-align: center;
@@ -15,14 +15,15 @@ header {
     margin: 0;
 }
 
-nav ul {
+#site-nav ul {
     display: flex;
     flex-direction: row;
     background-color: #333;
     overflow: hidden;
+    margin: 0;
 }
 
-nav ul li {
+#site-nav ul li {
     display: inline-block;
     padding: 0 20px;
 }

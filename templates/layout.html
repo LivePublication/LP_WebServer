@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
@@ -30,12 +29,16 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
   <link rel="manifest" href="/static/favicon/site.webmanifest">
 
+  <!-- Additional head content -->
+  {% block head %}  {% endblock %}
 </head>
+
+<body>
 <!-- Site title and navbar -->
-<header>
+<header id="site-header">
     <div class="wrapper">
         <h1>{{ title }}</h1>
-        <nav>
+        <nav id="site-nav">
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About</a></li>
@@ -45,20 +48,23 @@
         </nav>
     </div>
 </header>
-<body>
+<!-- Additional headers -->
+{% block header %}
+
+{% endblock %}
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="wrapper">
-      {% block content %}
-      <div class="grid-container halves">
+{% block content %}
+<div class="wrapper">
+    <div class="grid-container halves">
           <div>
             <p>{{ text }}</p>
           </div>
         </div>
       </div>
-      {% endblock %}
-  </div>
+</div>
+{% endblock %}
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
