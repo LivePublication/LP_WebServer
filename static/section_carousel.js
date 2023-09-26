@@ -18,10 +18,10 @@ function createCarouselById(id, data, current, next, previous) {
         <div id="#${id}">
             ${data}
         </div>
-        <div id="next">
+        <div id="previous">
             <button onclick="fetchCarouselById('${id}', '${next}')">Next</button>
         </div>
-        <div id="previous">
+        <div id="next">
             <button onclick="fetchCarouselById('${id}', '${previous}')">Previous</button>
         </div>
     </div>
