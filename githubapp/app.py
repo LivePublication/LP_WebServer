@@ -107,7 +107,7 @@ def get_paper_version_list(repo: Repository) -> list[dict]:
     # TODO: this function only serves one page - could be modularised
     versions = [
         {'sha': c.sha,
-         'date': c.last_modified,
+         'date': c.commit.author.date.strftime('%X %x'),
          'message': c.commit.message,
          'tags': []}
         for c in repo.get_commits()]
