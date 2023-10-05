@@ -6,7 +6,7 @@ from markupsafe import escape, Markup
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from githubapp.app import get_all_repos, _get_quarto_metadata, get_repo, get_paper_version_list, repo_dir_name, \
-    get_next_prev_slug
+    get_next_prev_slug, get_commits
 from processing.artefacts import host_artefacts
 from processing.paper import list_papers, paper_content, gh_paper_content
 
@@ -208,6 +208,22 @@ def paper_files(owner, repo_name, sha, filespec):
         return flask.send_from_directory(repo_dir, _filespec)
     except FileNotFoundError:
         flask.abort(404)
+
+
+@app.route('/editor/')
+def editor():
+    # TODO: hard coded repo for now
+    _owner = 'LivePublication'
+    _repo_name = 'LP_Pub_LID'
+
+    # Get the most recent commit for the manuscript
+    # TODO: this logic doesn't make sense - you'd want to be able to update the manuscript seperately
+    repo = get_repo(_owner, _repo_name)
+    versions = get_commits(repo)
+    latest = versions[-1]
+
+    # TODO: Get list of possible flows to execute
+    return flask.render_template('editor.html', title='Editor', text='test')
 
 
 if __name__ == '__main__':

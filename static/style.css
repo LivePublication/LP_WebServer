@@ -34,3 +34,42 @@
     margin: 2em 0;
     background-color: #ddd;  /* slight highlight for new feature */
 }
+
+
+/* Editor layout */
+.editor-wrapper {
+    display: block;
+    margin: 0 auto;
+    width: 90vw;
+}
+
+.editor-grid {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 15% auto 15%;
+    grid-gap: 20px;
+    padding: 20px;
+}
+
+.highlight {
+    background-color: #ddd;
+}
+
+.manuscript-icon,
+.flow-icon {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: fit-content;
+}
+
+.manuscript-icon img, .flow-icon img {
+    display: block;
+    margin: 1em auto .5em auto;
+}
+
+.manuscript-icon p, .flow-icon p {
+    text-align: center;
+    padding: 0;
+    margin: 5px auto;
+}

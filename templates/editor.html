@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    <script src="/static/editor.js"></script>
+    {{ head }}
+{% endblock %}
+
+{% block content %}
+<!--3 columns-->
+<div class="editor-wrapper">
+    <div class="editor-grid">
+        <div class="left-pane">
+            <h3>Select flow</h3>
+                <!-- Vertical list of icons that highlight on click -->
+            <div id="flow-icons">
+                <!-- Currently populated on DOM load -->
+            </div>
+        </div>
+        <div>
+            <h2>Editor</h2>
+                <!-- Button that triggers lid flow-->
+            <button id="trigger-flow-btn" class="btn btn-primary" onclick="openLidFlow()">Open lid flow</button>
+
+                <!-- initially hidden spinner-->
+            <div id="spinner" style="display:none;">
+                <img style="width: 100px;" src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="spinner">
+                <p id="time-elapsed"></p>
+                <p id="current-task"></p>
+            </div>
+            <p> {{ text }} </p>
+        </div>
+        <div class="right-pane">
+            <h3>Select format</h3>
+                <!-- Vertical list of icons that highlight on click -->
+            <div id="manuscript-icons">
+                <!-- Currently populated on DOM load -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
