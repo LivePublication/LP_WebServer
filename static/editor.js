@@ -54,7 +54,7 @@ function pollFlowStatus() {
 
 function previewRender() {
     // Open preview tab
-    window.open("https://livepup-globus.cloud.edu.au/render/" + flow_id, "_blank");
+    window.open("https://api.livepup-globus.cloud.edu.au/render/" + flow_id, "_blank");
 }
 
 function pushToGit() {
