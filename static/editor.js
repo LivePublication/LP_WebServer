@@ -1,26 +1,34 @@
+let flow_id;
+
 // Send flow trigger to server
 function openLidFlow() {
-    // Reveal spinner
-    document.getElementById("spinner").style.display = "block";
-    // Trigger flow
-    // window.location.href = '/editor';
-    // Start polling status
-    pollFlowStatus();
     // Disable button
     document.getElementById("trigger-flow-btn").disabled = true;
+    // Reveal spinner
+    document.getElementById("spinner").style.display = "block";
+
+    // Trigger the flow on the api server
+    fetch('https://api.livepup-globus.cloud.edu.au/start_flow', {method: "POST"})
+        .then(response => response.json())
+        .then(data => {
+            flow_id = data.task_id;
+        })
+        .then(pollFlowStatus)
 }
+
+flow_id = null;
 
 // Poll server for flow execution status
 function pollFlowStatus() {
-    fetch('https://api.livepup-globus.cloud.edu.au/flow_status')
+    fetch('https://api.livepup-globus.cloud.edu.au/flow_status/' + flow_id)
         .then(response => response.json())
         .then(data => {
             // If the status is not complete, poll again
-            if (data.status !== 'complete') {
+            if (data.status !== 'SUCCESS') {
                 // Show time elapsed
                 document.getElementById("time-elapsed").innerHTML = data.time_elapsed;
                 // Show current task
-                document.getElementById("current-task").innerHTML = data.current_task;
+                document.getElementById("current-task").innerHTML = data.status;
                 // Poll
                 setTimeout(pollFlowStatus, 1000);
             } else {
@@ -33,11 +41,29 @@ function pollFlowStatus() {
                 document.getElementById("results").innerHTML = data.results;
                 // Re-enable button
                 document.getElementById("trigger-flow-btn").disabled = false;
+                // Show render preview button
+                document.getElementById("preview-render").style.display = "block";
+                // Show push-to-git button
+                document.getElementById("push-git").style.display = "block";
             }
         })
         .catch(error => {
             console.log(error);
         });
+}
+
+function previewRender() {
+    // Open preview tab
+    window.open("https://livepup-globus.cloud.edu.au/render/" + flow_id, "_blank");
+}
+
+function pushToGit() {
+    fetch('https://api.livepup-globus.cloud.edu.au/push_to_git/' + flow_id)
+        .then(response => response.json())
+        .then(data => {
+            // Show the results
+            document.getElementById("push-git-results").innerHTML = data.results;
+        })
 }
 
 // Highlight icons on click

@@ -1,5 +1,7 @@
 import logging
 import flask
+from os import path
+
 from bs4 import BeautifulSoup
 from flask import render_template
 from markupsafe import escape, Markup

@@ -27,7 +27,13 @@
                 <p id="time-elapsed"></p>
                 <p id="current-task"></p>
             </div>
-            <p> {{ text }} </p>
+            <div id="preview-render" style="display:none;">
+                <button id ="preview-render-btn" class="btn btn-primary" onclick="previewRender()">Preview render</button>
+            </div>
+            <div id="push-git" style="display:none;">
+                <button id="push-git-btn" class="btn btn-primary" onclick="pushGit()">Push to git</button>
+                <p id="push-git-results"></p>
+            </div>
         </div>
         <div class="right-pane">
             <h3>Select format</h3>
