@@ -43,6 +43,8 @@ function pollFlowStatus() {
                 document.getElementById("trigger-flow-btn").disabled = false;
                 // Show render preview button
                 document.getElementById("preview-render").style.display = "block";
+                // Load render iframe
+                document.getElementById("render-iframe").src = "https://api.livepup-globus.cloud.edu.au/render/" + flow_id;
                 // Show push-to-git button
                 document.getElementById("push-git").style.display = "block";
             }
