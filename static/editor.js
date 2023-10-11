@@ -36,9 +36,9 @@ function pollFlowStatus() {
                 // Hide spinner
                 document.getElementById("spinner").style.display = "none";
                 // Show results
-                document.getElementById("results").style.display = "block";
+                // document.getElementById("results").style.display = "block";
                 // Show the results
-                document.getElementById("results").innerHTML = data.results;
+                // document.getElementById("results").innerHTML = data.results;
                 // Re-enable button
                 document.getElementById("trigger-flow-btn").disabled = false;
                 // Show render preview button
