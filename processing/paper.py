@@ -47,6 +47,29 @@ def paper_content(folder):
     return pandoc.write(doc, format='html')
 
 
+def gh_paper_update_links(folder, render_file):
+    """Update any links in the rendered file to point to the correct location"""
+    # Rename all references to artefacts
+    with open(render_file, 'r', encoding='utf-8') as f:
+        html = f.read()
+
+    # TODO - we shouldn't move everything to static, but consider just serving index_files from there
+    # targets = os.listdir(path.join(repo_dir, 'render'))
+    # static_dir = path.join('static', 'paper-artefacts', owner, repo_name, sha)
+    # os.makedirs(static_dir, exist_ok=True)
+    # for target in targets:
+    #     if target != 'temp.html':
+    #         html = html.replace(target, path.join('/', static_dir, target).replace('\\', '/'))
+    #         target_path = path.join(repo_dir, 'render', target)
+    #         if path.isfile(target_path):
+    #             shutil.copyfile(target_path, path.join(static_dir, target))
+    #         else:
+    #             shutil.copytree(path.join(repo_dir, 'render', target), path.join(static_dir, target))
+
+    with open(render_file, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
 def gh_paper_content(owner, repo_name, sha):
     # Get downloaded repo
     repo = get_repo(owner, repo_name)
